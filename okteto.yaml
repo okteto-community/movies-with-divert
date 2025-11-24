@@ -1,0 +1,90 @@
+icon: https://apps.okteto.com/movies/icon.png
+
+build:
+  frontend:
+    context: frontend
+  catalog:
+    context: catalog
+  rent:
+    context: rent
+  api:
+    context: api
+  worker:
+    context: worker
+  tests:
+    context: tests
+
+deploy:
+  - name: Deploy Infrastructure (PostgreSQL, Kafka, MongoDB)
+    command: helm upgrade --install infrastructure infrastructure/chart
+  - name: Deploy Frontend
+    command: helm upgrade --install frontend frontend/chart --set image=${OKTETO_BUILD_FRONTEND_IMAGE}
+  - name: Deploy Catalog
+    command: helm upgrade --install catalog catalog/chart --set image=${OKTETO_BUILD_CATALOG_IMAGE}
+  - name: Deploy Rent
+    command: helm upgrade --install rent rent/chart --set image=${OKTETO_BUILD_RENT_IMAGE}
+  - name: Deploy Worker
+    command: helm upgrade --install worker worker/chart --set image=${OKTETO_BUILD_WORKER_IMAGE}
+  - name: Deploy API
+    command: helm upgrade --install api api/chart --set image=${OKTETO_BUILD_API_IMAGE} --set load=${API_LOAD_DATA:-true}
+
+dev:
+  frontend:
+    image: okteto/node:20
+    workdir: /usr/src/app
+    command: bash
+    sync:
+      - frontend:/usr/src/app
+  catalog:
+    command: yarn start
+    sync:
+      - catalog:/src
+    forward:
+      - 9229:9229
+  rent:
+    command: mvn spring-boot:run
+    workdir: /app
+    sync:
+      - rent:/app
+    volumes:
+      - /root/.m2
+    forward:
+      - 5005:5005
+      - 5432:postgresql:5432
+  api:
+    image: okteto/golang:1.24
+    workdir: /usr/src/app
+    command: bash
+    securityContext:
+      capabilities:
+        add:
+        - SYS_PTRACE
+    sync:
+      - api:/usr/src/app
+    forward:
+      - 2346:2345
+  worker:
+    image: okteto/golang:1.24
+    workdir: /usr/src/app
+    command: bash
+    securityContext:
+      capabilities:
+        add:
+        - SYS_PTRACE
+    sync:
+      - worker:/usr/src/app
+    forward:
+      - 2345:2345
+test:
+  e2e:
+    image: ${OKTETO_BUILD_TESTS_IMAGE}
+    context: tests
+    caches:
+      - yarn/.cache
+      - node_modules
+    commands:
+      - yarn install
+      - yarn test
+    artifacts:
+      - test-results
+      - playwright-report

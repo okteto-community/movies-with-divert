@@ -1,0 +1,24 @@
+icon: https://apps.okteto.com/movies/icon.png
+
+build:
+  rent:
+    context: rent
+
+deploy:
+  divert:
+    namespace: ${OKTETO_SHARED_NAMESPACE}
+  commands:
+  - name: Deploy Rent
+    command: helm upgrade --install rent rent/chart --set image=${OKTETO_BUILD_RENT_IMAGE}
+
+dev:
+  rent:
+    command: mvn spring-boot:run
+    workdir: /app
+    sync:
+      - rent:/app
+    volumes:
+      - /root/.m2
+    forward:
+      - 5005:5005
+      - 5432:postgresql:5432
