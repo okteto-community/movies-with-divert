@@ -48,7 +48,7 @@ To use Istio instead, change `driver: nginx` to `driver: istio` in the divert co
    cd movies
    ```
 
-2. **Deploy the shared environment **
+2. **Deploy the shared environment**
    ```bash
    okteto preview deploy --repository https://github.com/okteto-community/movies-with-divert --label=okteto-shared movies-shared
    ```
@@ -63,11 +63,16 @@ This is what the application looks like:
 
 The key advantage of divert is that you only need to deploy the service(s) you are actively working, rather than the full application.
 
-To deploy your development environment export the `OKTETO_SHARED_NAMESPACE` environment variable, and run the `okteto deploy` command with the corresponding okteto manifest. This repository contains samples for configurations below.
+To deploy your development environment export the `OKTETO_SHARED_NAMESPACE` environment variable, and run the `okteto deploy` command with the corresponding okteto manifest. This repository contains samples for configurations below:
+
+```
+export OKTETO_SHARED_NAMESPACE="movies-shared"
+okteto up -f okteto.catalog.yaml
+```
 
 Available Divert Configurations:
 
-1. Frontend Development (`okteto.frontend.yaml`)
+##### 1. Frontend Development (`okteto.frontend.yaml`)
 **Use when**: Working on React UI components, user interactions, or frontend features
 
 **What it deploys**:
@@ -80,7 +85,7 @@ Available Divert Configurations:
 - Worker service
 - Infrastructure
 
-2. Catalog Development (`okteto.catalog.yaml`)
+##### 2. Catalog Development (`okteto.catalog.yaml`)
 **Use when**: Working on movie catalog, inventory management, or MongoDB integration
 
 **What it deploys**:
@@ -94,7 +99,7 @@ Available Divert Configurations:
 - Infrastructure
 
 
-3. API Gateway Development (`okteto.api.yaml`)
+##### 3. API Gateway Development (`okteto.api.yaml`)
 **Use when**: Working on API endpoints, user management, or PostgreSQL integration
 
 **What it deploys**:
@@ -107,7 +112,7 @@ Available Divert Configurations:
 - Worker Service
 - Infrastructure
 
-4. Rent Development (`okteto.rent.yaml`)
+##### 4. Rent Development (`okteto.rent.yaml`)
 **Use when**: Working on rental logic, Kafka integration, or Spring Boot backend
 
 **What it deploys**:
@@ -120,7 +125,7 @@ Available Divert Configurations:
 - Worker Service
 - Infrastructure
 
-4. Worker Development (`okteto.worker.yaml`)
+##### 5. Worker Development (`okteto.worker.yaml`)
 **Use when**: Working on message processing logic
 
 **What it deploys**:
@@ -136,88 +141,6 @@ Available Divert Configurations:
 
 ## Baggage Header Propagation
 All the servicers of the movies app have been instrumented with baggage header propagation to ensure Divert routing works seamlessly across all services.
-
-
-## Testing Your Divert Setup
-
-### 1. Test Header Propagation Locally
-
-```bash
-# Start each service and verify header logging
-curl -H "baggage: okteto-divert=test" http://localhost:8080/catalog
-```
-
-### 2. Test Divert in Okteto
-
-```bash
-# Test with baggage header (routes to your namespace)
-curl -H "baggage: okteto-divert=alice-movies" https://movies-movies-staging.okteto.dev
-
-# Test direct access (bypasses Divert)
-curl https://movies-alice-movies.okteto.dev
-```
-
-### 3. Verify Divert Resources
-
-```bash
-# Check Divert custom resources
-kubectl get diverts -n alice-movies
-
-# Check HTTPRoutes in shared namespace
-kubectl get httproutes -n movies-staging | grep okteto-
-
-# Check service endpoints
-kubectl get endpoints -n alice-movies
-```
-
-### 4. Browser Testing
-
-1. Open the shared staging URL: `https://movies-movies-staging.okteto.dev`
-2. Add query parameter: `?baggage=okteto-divert%3Dalice-movies`
-3. Verify your service changes appear
-4. Check that other services work normally (shared from staging)
-
-
-## Troubleshooting
-
-### Issue: Services can't communicate
-
-**Solution**: Verify network policies allow cross-namespace communication
-```bash
-kubectl get networkpolicies -n alice-movies
-kubectl get networkpolicies -n movies-staging
-```
-
-### Issue: Baggage header not propagating
-
-**Solution**: Check service logs for header values
-```bash
-kubectl logs -n alice-movies deployment/frontend -f
-```
-
-### Issue: Divert routing not working
-
-**Solution**: Verify Divert custom resource is created
-```bash
-kubectl describe divert -n alice-movies
-kubectl get httproutes -n movies-staging
-```
-
-### Issue: Can't connect to shared databases
-
-**Solution**: Verify service discovery and DNS
-```bash
-kubectl run -it --rm debug --image=nicolaka/netshoot --restart=Never -- nslookup mongodb.movies-staging.svc.cluster.local
-```
-
-### Issue: Linkerd not injecting sidecar (Nginx driver only)
-
-**Solution**: Ensure shared namespace has `okteto-shared` label for Linkerd sidecar injection
-```bash
-kubectl get namespace movies-staging -o yaml | grep okteto-shared
-```
-
-**Note**: This issue only applies when using the Nginx driver. Istio driver does not require Linkerd.
 
 
 ## Best Practices

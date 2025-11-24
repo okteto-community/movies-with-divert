@@ -22,6 +22,7 @@ async function startWithRetry() {
     app.get("/catalog", async (req, res, next) => {
       console.log(`GET /catalog`)
       try {
+        console.log(`retrieving catalog items`)
         const results = await db.collection('catalog').find().toArray();
         res.json(results);
       } catch (err) {
