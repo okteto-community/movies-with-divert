@@ -53,7 +53,3 @@ jspm_packages
 
 # Serverless directories
 .serverless
-
-# Yarn files
-.yarn
-
