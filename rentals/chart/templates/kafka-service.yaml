@@ -1,0 +1,18 @@
+{{- if .Values.kafka.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka
+  labels:
+    app: rent
+spec:
+  type: ClusterIP
+  ports:
+    - port: {{ .Values.kafka.service.port }}
+      targetPort: kafka
+      protocol: TCP
+      name: kafka
+  selector:
+    app: rent
+    component: kafka
+{{- end }}

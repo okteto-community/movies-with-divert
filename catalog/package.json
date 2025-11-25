@@ -14,5 +14,5 @@
     "start": "nodemon server.js",
     "load": "node load.js"
   },
-  "packageManager": "yarn@4.9.4"
+  "packageManager": "yarn@4.12.0"
 }

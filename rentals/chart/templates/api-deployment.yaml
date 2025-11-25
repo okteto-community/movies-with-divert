@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: rent
+    component: api
+  name: rent
+spec:
+  replicas: {{ .Values.api.replicaCount }}
+  selector:
+    matchLabels:
+      app: rent
+      component: api
+  template:
+    metadata:
+      labels:
+        app: rent
+        component: api
+    spec:
+      containers:
+      - image: {{ .Values.api.image }}
+        name: rent
+        ports:
+        - containerPort: 8080
+          name: rent

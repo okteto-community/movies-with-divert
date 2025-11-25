@@ -2,7 +2,6 @@
 replicaCount: 1
 image: ""
 
-# MongoDB Configuration
 mongodb:
   enabled: true
   image:

@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: rent
+    component: api
+  name: rent
+spec:
+  type: ClusterIP
+  ports:
+  - name: rent
+    port: 8080
+  selector:
+    app: rent
+    component: api
+  
