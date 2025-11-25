@@ -3,6 +3,7 @@ package database
 import (
 	"database/sql"
 	"fmt"
+	"time"
 
 	_ "github.com/lib/pq"
 )
@@ -42,6 +43,8 @@ func Ping(db *sql.DB) {
 			fmt.Println("Postgresql connected!")
 			return
 		}
+
+		time.Sleep(1 * time.Second)
 	}
 }
 

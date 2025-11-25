@@ -44,7 +44,13 @@ public class RentController {
     @GetMapping(path= "/rent", produces = "application/json")
     List<Rental> getAllRentals() {
         logger.info("Fetching all rentals from database");
-        return rentalRepository.findAll();
+        List<Rental> allRentals = rentalRepository.findAll();
+
+        // uncomment to increase price
+        //for (Rental allRental : allRentals) {
+        //    allRental.setPrice("68.99");
+        //} 
+        return allRentals;
     }
     
     @PostMapping(path= "/rent", consumes = "application/json", produces = "application/json")

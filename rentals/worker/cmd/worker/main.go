@@ -50,6 +50,8 @@ func main() {
 		log.Panic(err)
 	}
 
+	database.Ping(db)
+
 	if err := database.LoadData(db); err != nil {
 		log.Panic(err)
 	}
