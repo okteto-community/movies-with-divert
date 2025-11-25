@@ -20,7 +20,7 @@ deploy:
   - name: Deploy Catalog
     command: helm upgrade --install catalog catalog/chart --set image=${OKTETO_BUILD_CATALOG_IMAGE}
   - name: Deploy Rentals
-    command: helm upgrade --install rent rentals/chart --set api.image=${OKTETO_BUILD_RENT_IMAGE} --set worker.image=${OKTETO_BUILD_WORKER_IMAGE}
+    command: helm upgrade --install rentals rentals/chart --set api.image=${OKTETO_BUILD_RENT_IMAGE} --set worker.image=${OKTETO_BUILD_WORKER_IMAGE}
   - name: Deploy API
     command: helm upgrade --install api api/chart --set image=${OKTETO_BUILD_API_IMAGE}
 
@@ -46,7 +46,7 @@ dev:
       - frontend:/usr/src/app
 
   catalog:
-    command: yarn start
+    command: bash
     sync:
       - catalog:/src
     forward:

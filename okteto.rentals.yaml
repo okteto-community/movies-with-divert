@@ -2,14 +2,16 @@ icon: https://apps.okteto.com/movies/icon.png
 
 build:
   rent:
-    context: rent
+    context: rentals/rent
+  worker:
+    context: rentals/worker
 
 deploy:
   divert:
     namespace: ${OKTETO_SHARED_NAMESPACE}
   commands:
   - name: Deploy Rent
-    command: helm upgrade --install rent rent/chart --set image=${OKTETO_BUILD_RENT_IMAGE}
+    command: helm upgrade --install rentals rentals/chart --set api.image=${OKTETO_BUILD_RENT_IMAGE} --set worker.image=${OKTETO_BUILD_WORKER_IMAGE}
 
 dev:
   rent:
