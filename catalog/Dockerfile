@@ -10,6 +10,6 @@ ENV YARN_CACHE_FOLDER=/root/.yarn
 
 # Install using Yarn 4
 RUN --mount=type=cache,target=/root/.yarn yarn install
-
+COPY data data
 COPY load.js server.js ./
 CMD ["yarn", "start"]
