@@ -9,15 +9,6 @@ PostgreSQL:
 
 {{- end }}
 
-{{- if .Values.mongodb.enabled }}
-MongoDB:
-  Connection: mongodb://mongodb:27017/movies
-  
-  To connect from within the cluster:
-  kubectl run mongodb-client --rm --tty -i --restart='Never' --image mongo:7 -- mongosh --host mongodb --port 27017
-
-{{- end }}
-
 {{- if .Values.kafka.enabled }}
 Kafka:
   Bootstrap server: kafka:9092
@@ -30,9 +21,6 @@ Kafka:
 2. Infrastructure components deployed:
 {{- if .Values.postgresql.enabled }}
    - PostgreSQL {{ .Values.postgresql.image.tag }}
-{{- end }}
-{{- if .Values.mongodb.enabled }}
-   - MongoDB {{ .Values.mongodb.image.tag }}
 {{- end }}
 {{- if .Values.kafka.enabled }}
    - Kafka {{ .Values.kafka.image.tag }} (KRaft mode - no Zookeeper needed)

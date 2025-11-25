@@ -4,10 +4,9 @@ kind: Service
 metadata:
   name: mongodb
   labels:
+    {{- include "movies.labels" . | nindent 4 }}
+    app.kubernetes.io/component: mongodb
     app: mongodb
-    chart: {{ include "infrastructure.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
 spec:
   type: ClusterIP
   ports:
@@ -17,5 +16,5 @@ spec:
       name: mongodb
   selector:
     app: mongodb
-    release: {{ .Release.Name }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
