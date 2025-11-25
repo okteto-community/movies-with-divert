@@ -3,6 +3,7 @@ package database
 import (
 	"database/sql"
 	"fmt"
+	"log"
 	"time"
 
 	_ "github.com/lib/pq"
@@ -37,10 +38,10 @@ func LoadData(db *sql.DB) error {
 }
 
 func Ping(db *sql.DB) {
-	fmt.Println("Waiting for postgresql...")
+	log.Println("Waiting for postgresql...")
 	for {
 		if err := db.Ping(); err == nil {
-			fmt.Println("Postgresql connected!")
+			log.Println("Postgresql connected!")
 			return
 		}
 
@@ -50,7 +51,7 @@ func Ping(db *sql.DB) {
 
 // createOrUpdateRental creates or updates a rental entry in the database
 func CreateOrUpdateRental(db *sql.DB, rentalID string, rentalPrice string) error {
-	fmt.Println("Received internal request to create/update rental...")
+	log.Println("Received internal request to create/update rental...")
 
 	insertDynStmt := `insert into "rentals"("id", "price") values($1, $2) on conflict(id) do update set price = $2`
 	if _, err := db.Exec(insertDynStmt, rentalID, rentalPrice); err != nil {
@@ -62,7 +63,7 @@ func CreateOrUpdateRental(db *sql.DB, rentalID string, rentalPrice string) error
 
 // deleteRental deletes a rental entry from the database
 func DeleteRental(db *sql.DB, rentalID string) error {
-	fmt.Printf("Received internal request to delete rental: ID=%s\n", rentalID)
+	log.Printf("Received internal request to delete rental: ID=%s\n", rentalID)
 	deleteStmt := `DELETE FROM rentals WHERE id = $1`
 	if _, err := db.Exec(deleteStmt, rentalID); err != nil {
 		return err
