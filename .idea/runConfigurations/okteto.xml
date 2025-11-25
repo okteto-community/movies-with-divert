@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="up" type="ShConfigurationType">
-    <option name="SCRIPT_TEXT" value="okteto up rent" />
+  <configuration default="false" name="okteto" type="ShConfigurationType">
+    <option name="SCRIPT_TEXT" value="okteto up rent -f okteto.rentals.yaml" />
     <option name="INDEPENDENT_SCRIPT_PATH" value="true" />
     <option name="SCRIPT_PATH" value="" />
     <option name="SCRIPT_OPTIONS" value="" />
@@ -11,7 +11,9 @@
     <option name="INTERPRETER_OPTIONS" value="" />
     <option name="EXECUTE_IN_TERMINAL" value="true" />
     <option name="EXECUTE_SCRIPT_FILE" value="false" />
-    <envs />
+    <envs>
+      <env name="OKTETO_SHARED_NAMESPACE" value="movies-shared" />
+    </envs>
     <method v="2" />
   </configuration>
 </component>
