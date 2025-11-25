@@ -1,30 +1,26 @@
 icon: https://apps.okteto.com/movies/icon.png
 
 build:
+  api:
+    context: api
   frontend:
     context: frontend
   catalog:
     context: catalog
   rent:
-    context: rent
-  api:
-    context: api
+    context: rentals/rent
   worker:
-    context: worker
+    context: rentals/worker
   tests:
     context: tests
 
 deploy:
-  - name: Deploy Infrastructure (PostgreSQL, Kafka)
-    command: helm upgrade --install infrastructure infrastructure/chart
   - name: Deploy Frontend
     command: helm upgrade --install frontend frontend/chart --set image=${OKTETO_BUILD_FRONTEND_IMAGE}
   - name: Deploy Catalog
     command: helm upgrade --install catalog catalog/chart --set image=${OKTETO_BUILD_CATALOG_IMAGE}
-  - name: Deploy Rent
-    command: helm upgrade --install rent rent/chart --set image=${OKTETO_BUILD_RENT_IMAGE}
-  - name: Deploy Worker
-    command: helm upgrade --install worker worker/chart --set image=${OKTETO_BUILD_WORKER_IMAGE}
+  - name: Deploy Rentals
+    command: helm upgrade --install rent rentals/chart --set api.image=${OKTETO_BUILD_RENT_IMAGE} --set worker.image=${OKTETO_BUILD_WORKER_IMAGE}
   - name: Deploy API
     command: helm upgrade --install api api/chart --set image=${OKTETO_BUILD_API_IMAGE} --set load=${API_LOAD_DATA:-true}
 
@@ -45,7 +41,7 @@ dev:
     command: mvn spring-boot:run
     workdir: /app
     sync:
-      - rent:/app
+      - rentals/rent:/app
     volumes:
       - /root/.m2
     forward:
@@ -72,7 +68,7 @@ dev:
         add:
         - SYS_PTRACE
     sync:
-      - worker:/usr/src/app
+      - rentals/worker:/usr/src/app
     forward:
       - 2345:2345
 test:

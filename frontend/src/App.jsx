@@ -78,7 +78,7 @@ class App extends Component {
       .then(res => res.json())
       .then(result => compact(result));
 
-    const rentalsPromise = fetch('/rentals')
+    const rentalsPromise = fetch('/rent')
       .then(res => res.json())
       .then(result => compact(result));
 

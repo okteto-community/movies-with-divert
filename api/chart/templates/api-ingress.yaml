@@ -10,20 +10,6 @@ spec:
   rules:
     - http:
         paths:
-          - path: /rentals
-            pathType: Prefix
-            backend:
-              service:
-                name: api
-                port:
-                  number: 8080
-          - path: /users
-            pathType: Prefix
-            backend:
-              service:
-                name: api
-                port:
-                  number: 8080
           - path: /catalog
             pathType: Prefix
             backend:
