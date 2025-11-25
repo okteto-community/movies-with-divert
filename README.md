@@ -136,7 +136,7 @@ This repository contains samples for different configurations.
 
 
 ## Baggage Header Propagation
-Note that all the servicers of the movies app have been instrumented with baggage header propagation. This is so that Okteto Divert routing works seamlessly across all services.
+Note that all the services of the movies app have been instrumented with baggage header propagation. This is so that Okteto Divert routing works seamlessly across all services.
 
 
 ## Best Practices
