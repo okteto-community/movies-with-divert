@@ -6,7 +6,6 @@ import (
 	"log"
 	"os"
 	"os/signal"
-	"strings"
 	"sync"
 
 	kingpin "gopkg.in/alecthomas/kingpin.v2"
@@ -117,7 +116,7 @@ func (h *ConsumerGroupHandler) Cleanup(sarama.ConsumerGroupSession) error {
 	return nil
 }
 
-func (c *ConsumerGroupHandler) shouldProcessMessage(baggage string) bool {
+/*func (c *ConsumerGroupHandler) shouldProcessMessage(baggage string) bool {
 	// Extract okteto-divert value from baggage
 	divertValue := extractOktetoDivertFromBaggage(baggage)
 
@@ -130,10 +129,10 @@ func (c *ConsumerGroupHandler) shouldProcessMessage(baggage string) bool {
 	return c.divertKey == ""
 
 	// Rule 3: If this doesn't belong to anybody else, the 'shared' should get it
-}
+}*/
 
 // extractOktetoDivertFromBaggage parses baggage string and extracts okteto-divert value
-func extractOktetoDivertFromBaggage(baggage string) string {
+/*func extractOktetoDivertFromBaggage(baggage string) string {
 	if baggage == "" {
 		return ""
 	}
@@ -148,10 +147,10 @@ func extractOktetoDivertFromBaggage(baggage string) string {
 	}
 
 	return ""
-}
+}*/
 
 // extractBaggageHeader extracts the baggage header value from Kafka message headers
-func extractBaggageHeader(headers []*sarama.RecordHeader) string {
+/*func extractBaggageHeader(headers []*sarama.RecordHeader) string {
 	for _, header := range headers {
 		if string(header.Key) == "baggage" {
 			baggageValue := string(header.Value)
@@ -162,19 +161,19 @@ func extractBaggageHeader(headers []*sarama.RecordHeader) string {
 		}
 	}
 	return ""
-}
+}*/
 
 // ConsumeClaim must start a consumer loop of ConsumerGroupClaim's Messages()
 func (h *ConsumerGroupHandler) ConsumeClaim(session sarama.ConsumerGroupSession, claim sarama.ConsumerGroupClaim) error {
 	for message := range claim.Messages() {
 		// Extract baggage header once for the message
-		baggageHeader := extractBaggageHeader(message.Headers)
+		//baggageHeader := extractBaggageHeader(message.Headers)
 
 		// Check if we should process this message based on divert logic
-		if !h.shouldProcessMessage(baggageHeader) {
-			log.Printf("Not processing message, it belongs to a diverted worker")
-			continue
-		}
+		//if !h.shouldProcessMessage(baggageHeader) {
+		//	log.Printf("Not processing message, it belongs to a diverted worker")
+		//	continue
+		//}
 
 		*h.messageCount++
 

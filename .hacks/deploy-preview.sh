@@ -1,0 +1,1 @@
+okteto preview deploy --repository https://github.com/okteto-community/movies-with-divert --label=okteto-shared movies-shared
