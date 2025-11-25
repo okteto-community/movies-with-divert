@@ -9,7 +9,7 @@ deploy:
     namespace: ${OKTETO_SHARED_NAMESPACE}
   commands:
   - name: Deploy Catalog
-    command: helm upgrade --install catalog catalog/chart --set image=${OKTETO_BUILD_CATALOG_IMAGE}
+    command: helm upgrade --install catalog catalog/chart --set image=${OKTETO_BUILD_CATALOG_IMAGE} --set mongodb.enabled=false
 
 dev:
   catalog:

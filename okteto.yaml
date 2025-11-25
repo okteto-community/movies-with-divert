@@ -22,7 +22,7 @@ deploy:
   - name: Deploy Rentals
     command: helm upgrade --install rent rentals/chart --set api.image=${OKTETO_BUILD_RENT_IMAGE} --set worker.image=${OKTETO_BUILD_WORKER_IMAGE}
   - name: Deploy API
-    command: helm upgrade --install api api/chart --set image=${OKTETO_BUILD_API_IMAGE} --set load=${API_LOAD_DATA:-true}
+    command: helm upgrade --install api api/chart --set image=${OKTETO_BUILD_API_IMAGE}
 
 dev:
   api:
