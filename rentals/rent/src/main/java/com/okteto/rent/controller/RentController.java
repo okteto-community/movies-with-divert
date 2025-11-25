@@ -48,30 +48,28 @@ public class RentController {
     }
     
     @PostMapping(path= "/rent", consumes = "application/json", produces = "application/json")
-    List<String> rent(@RequestBody Rent rentInput,
+    List<String> rent(@RequestBody Rental rentInput,
                       @RequestHeader(value = "baggage", required = false) String baggage) {
-        String catalogID = rentInput.getMovieID();
-        Double price = rentInput.getPrice();
+        String movieID = rentInput.getId();
+        String price = rentInput.getPrice();
 
-        logger.info("Rent [{},{}] received", catalogID, price);
-        if (baggage != null) {
-            logger.info("Baggage header received: {}", baggage);
-        }
+        logger.info("Rent [{},{}] received", movieID, price);
 
         // Create ProducerRecord to add custom headers
-        ProducerRecord<String, String> record = new ProducerRecord<>(KAFKA_TOPIC_RENTALS, catalogID, price.toString());
+        ProducerRecord<String, String> record = new ProducerRecord<>(KAFKA_TOPIC_RENTALS, movieID, price.toString());
 
         // Add baggage header to Kafka message if present
         if (baggage != null && !baggage.isEmpty()) {
+            logger.info("Baggage header received: {}", baggage);
             record.headers().add(new RecordHeader("baggage", baggage.getBytes(StandardCharsets.UTF_8)));
         }
 
         kafkaTemplate.send(record)
         .thenAccept(result -> logger.info("Message [{}] delivered with offset {}",
-                        catalogID,
+                        movieID,
                         result.getRecordMetadata().offset()))
         .exceptionally(ex -> {
-            logger.warn("Unable to deliver message [{}]. {}", catalogID, ex.getMessage());
+            logger.warn("Unable to deliver message [{}]. {}", movieID, ex.getMessage());
             return null;
         });
 
@@ -82,58 +80,33 @@ public class RentController {
     @PostMapping(path= "/rent/return", consumes = "application/json", produces = "application/json")
     public Map<String, String> returnMovie(@RequestBody ReturnRequest returnRequest,
                                            @RequestHeader(value = "baggage", required = false) String baggage) {
-        String catalogID = returnRequest.getMovieID();
+        String movieID = returnRequest.getMovieID();
 
-        logger.info("Return [{}] received", catalogID);
-        if (baggage != null) {
-            logger.info("Baggage header received: {}", baggage);
-        }
+        logger.info("Return [{}] received", movieID);
 
         // Create ProducerRecord to add custom headers
-        ProducerRecord<String, String> record = new ProducerRecord<>(KAFKA_TOPIC_RETURNS, catalogID, catalogID);
+        ProducerRecord<String, String> record = new ProducerRecord<>(KAFKA_TOPIC_RETURNS, movieID, movieID);
 
         // Add baggage header to Kafka message if present
         if (baggage != null && !baggage.isEmpty()) {
+            logger.info("Baggage header received: {}", baggage);
             record.headers().add(new RecordHeader("baggage", baggage.getBytes(StandardCharsets.UTF_8)));
         }
 
         kafkaTemplate.send(record)
         .thenAccept(result -> logger.info("Return message [{}] delivered with offset {}",
-                        catalogID,
+                        movieID,
                         result.getRecordMetadata().offset()))
         .exceptionally(ex -> {
-            logger.warn("Unable to deliver return message [{}]. {}", catalogID, ex.getMessage());
+            logger.warn("Unable to deliver return message [{}]. {}", movieID, ex.getMessage());
             return null;
         });
 
         return Collections.singletonMap("status", "return processed");
     }
 
-    public static class Rent {
-        @JsonProperty("catalog_id")
-        private String movieID;
-        private Double price;
-
-        public void setMovieID(String movieID) {
-            this.movieID = movieID;
-        }
-
-        public String getMovieID() {
-            return movieID;
-        }
-
-
-        public void setPrice(Double price) {
-            this.price = price;
-        }
-
-        public Double getPrice() {
-            return price;
-        }
-    }
-
     public static class ReturnRequest {
-        @JsonProperty("catalog_id")
+        @JsonProperty("id")
         private String movieID;
 
         public void setMovieID(String movieID) {

@@ -3,6 +3,7 @@ kind: Service
 metadata:
   labels:
     app: rent
+    component: api
   name: rent
 spec:
   type: ClusterIP
@@ -11,4 +12,5 @@ spec:
     port: 8080
   selector:
     app: rent
+    component: api
   

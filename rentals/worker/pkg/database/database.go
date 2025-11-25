@@ -15,14 +15,9 @@ const (
 	dbname   = "rentals"
 )
 
-func Open() *sql.DB {
+func Open() (*sql.DB, error) {
 	psqlconn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
-	for {
-		db, err := sql.Open("postgres", psqlconn)
-		if err == nil {
-			return db
-		}
-	}
+	return sql.Open("postgres", psqlconn)
 }
 
 func LoadData(db *sql.DB) error {

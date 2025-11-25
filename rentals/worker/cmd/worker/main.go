@@ -46,7 +46,11 @@ func main() {
 		log.Printf("OKTETO_DIVERTED_ENVIRONMENT not set, using default: %s", divertKey)
 	}
 
-	db := database.Open()
+	db, err := database.Open()
+	if err != nil {
+		log.Panic(err)
+	}
+
 	if err := database.LoadData(db); err != nil {
 		log.Panic(err)
 	}

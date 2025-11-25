@@ -10,14 +10,14 @@ spec:
   rules:
     - http:
         paths:
-          - path: /catalog
+          - path: /api/catalog
             pathType: Prefix
             backend:
               service:
                 name: api
                 port:
                   number: 8080
-          - path: /rent
+          - path: /api/rent
             pathType: Prefix
             backend:
               service:
