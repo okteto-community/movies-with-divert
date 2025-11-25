@@ -28,7 +28,7 @@ Okteto Divert supports two drivers:
 - **Nginx + Linkerd** (this demo): Uses Nginx ingress controller with Linkerd service mesh for header-based routing
 - **Istio** (native): Uses Istio's built-in VirtualService for header-based routing without requiring additional components
 
-To use Istio instead, change `driver: nginx` to `driver: istio` in the divert configurations.
+To use Istio instead, add `driver: istio` in the divert configurations in the okteto manifest.
 
 ## Quick Start
 
@@ -37,6 +37,7 @@ To use Istio instead, change `driver: nginx` to `driver: istio` in the divert co
 - Okteto CLI installed (`brew install okteto` or download from [okteto.com](https://okteto.com))
 - kubectl configured
 - Access to an Okteto cluster
+- Modheader (or a similar extension that enables host header customization) on your browser
 
 ### Setup Steps
 
@@ -63,14 +64,23 @@ This is what the application looks like:
 
 The key advantage of divert is that you only need to deploy the service(s) you are actively working, rather than the full application.
 
-To deploy your development environment export the `OKTETO_SHARED_NAMESPACE` environment variable, and run the `okteto deploy` command with the corresponding okteto manifest. This repository contains samples for configurations below:
-
+To deploy your development environment export the `OKTETO_SHARED_NAMESPACE` environment variable, and run the `okteto deploy` command with the corresponding okteto manifest. 
 ```
 export OKTETO_SHARED_NAMESPACE="movies-shared"
 okteto up -f okteto.catalog.yaml
 ```
 
-Available Divert Configurations:
+After this, access the application via the endpoint. You'll notice that it still access the shared service. In order for the request to access your personal copy of the catalog service, set the baggage header as shown below, where `cindy` is the name of your personal namespace.
+
+```
+baggage: okteto-divert=cindy
+```
+
+After setting the host header, hit the application again. Notice how now the request is being automatically routed to your copy of the catalog service. This is the power of Okteto Divert! Get a full end to end experience, while deploying only the services you are actively working on. 
+
+#### Available Divert Configurations:
+
+This repository contains samples for different configurations.
 
 ##### 1. Frontend Development (`okteto.frontend.yaml`)
 **Use when**: Working on React UI components, user interactions, or frontend features
@@ -83,24 +93,22 @@ Available Divert Configurations:
 - API Gateway service
 - Rent service
 - Worker service
-- Infrastructure
 
 ##### 2. Catalog Development (`okteto.catalog.yaml`)
 **Use when**: Working on movie catalog, inventory management, or MongoDB integration
 
 **What it deploys**:
 - Catalog service only (Node.js/Express)
+- MongoDB
 
 **Shares**:
 - Frontend
 - API service
 - Rent service
-- Worker service
-- Infrastructure
 
 
 ##### 3. API Gateway Development (`okteto.api.yaml`)
-**Use when**: Working on API endpoints, user management, or PostgreSQL integration
+**Use when**: Working on the public API
 
 **What it deploys**:
 - API Gateway service only (Golang)
@@ -110,37 +118,25 @@ Available Divert Configurations:
 - Catalog service
 - Rent service
 - Worker Service
-- Infrastructure
 
 ##### 4. Rent Development (`okteto.rent.yaml`)
-**Use when**: Working on rental logic, Kafka integration, or Spring Boot backend
+**Use when**: Working on rental logic, message processing, and Kafka integration
 
 **What it deploys**:
 - Rent service only (Java/Spring Boot)
-
-**Shares**:
-- Frontend
-- Catalog service
-- API service
 - Worker Service
-- Infrastructure
-
-##### 5. Worker Development (`okteto.worker.yaml`)
-**Use when**: Working on message processing logic
-
-**What it deploys**:
-- Worker service only (Golang)
+- Kafka
+- PostgresSQL
 
 **Shares**:
 - Frontend
 - Catalog service
 - API service
-- Rent Service
-- Infrastructure
+
 
 
 ## Baggage Header Propagation
-All the servicers of the movies app have been instrumented with baggage header propagation to ensure Divert routing works seamlessly across all services.
+Note that all the servicers of the movies app have been instrumented with baggage header propagation. This is so that Okteto Divert routing works seamlessly across all services.
 
 
 ## Best Practices
