@@ -4,21 +4,20 @@ kind: Deployment
 metadata:
   name: mongodb
   labels:
+    {{- include "movies.labels" . | nindent 4 }}
+    app.kubernetes.io/component: mongodb
     app: mongodb
-    chart: {{ include "infrastructure.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: mongodb
-      release: {{ .Release.Name }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
       labels:
         app: mongodb
-        release: {{ .Release.Name }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
       containers:
         - name: mongodb
@@ -87,10 +86,9 @@ kind: PersistentVolumeClaim
 metadata:
   name: mongodb-pvc
   labels:
+    {{- include "movies.labels" . | nindent 4 }}
+    app.kubernetes.io/component: mongodb
     app: mongodb
-    chart: {{ include "infrastructure.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
 spec:
   accessModes:
     - ReadWriteOnce
