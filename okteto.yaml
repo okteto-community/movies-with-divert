@@ -25,28 +25,6 @@ deploy:
     command: helm upgrade --install api api/chart --set image=${OKTETO_BUILD_API_IMAGE} --set load=${API_LOAD_DATA:-true}
 
 dev:
-  frontend:
-    image: okteto/node:20
-    workdir: /usr/src/app
-    command: bash
-    sync:
-      - frontend:/usr/src/app
-  catalog:
-    command: yarn start
-    sync:
-      - catalog:/src
-    forward:
-      - 9229:9229
-  rent:
-    command: mvn spring-boot:run
-    workdir: /app
-    sync:
-      - rentals/rent:/app
-    volumes:
-      - /root/.m2
-    forward:
-      - 5005:5005
-      - 5432:postgresql:5432
   api:
     image: okteto/golang:1.24
     workdir: /usr/src/app
@@ -59,6 +37,32 @@ dev:
       - api:/usr/src/app
     forward:
       - 2346:2345
+  
+  frontend:
+    image: okteto/node:20
+    workdir: /usr/src/app
+    command: bash
+    sync:
+      - frontend:/usr/src/app
+
+  catalog:
+    command: yarn start
+    sync:
+      - catalog:/src
+    forward:
+      - 9229:9229
+
+  rent:
+    command: mvn spring-boot:run
+    workdir: /app
+    sync:
+      - rentals/rent:/app
+    volumes:
+      - /root/.m2
+    forward:
+      - 5005:5005
+      - 5432:postgresql:5432
+      
   worker:
     image: okteto/golang:1.24
     workdir: /usr/src/app
