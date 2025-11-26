@@ -21,6 +21,7 @@ func main() {
 	muxRouter.HandleFunc("/api/rent", handlers.GetRentalsWithCatalogInfo).Methods(http.MethodGet)
 	muxRouter.Handle("/api/rent", http.StripPrefix("/api", handlers.NewProxy("http://rent:8080"))).Methods(http.MethodPost)
 	muxRouter.Handle("/api/rent/return", http.StripPrefix("/api", handlers.NewProxy("http://rent:8080"))).Methods(http.MethodPost)
+	muxRouter.Handle("/api/catalog/healthz", http.StripPrefix("/api", handlers.NewProxy("http://catalog:8080"))).Methods(http.MethodGet)
 	muxRouter.Handle("/api/catalog", http.StripPrefix("/api", handlers.NewProxy("http://catalog:8080"))).Methods(http.MethodGet)
 
 	fmt.Println("Running server on port 8080...")
