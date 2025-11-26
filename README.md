@@ -80,14 +80,20 @@ You can also easily test it from the terminal:
 
 ```
 # without the header 
-> curl -H https://movies-movies-shared.demo.okteto.dev/api/catalog/healthz
-Hi from movies-shared!
+> curl https://movies-movies-shared.demo.okteto.dev/api/catalog/healthz
+{
+"status": "ok",
+"namespace": "movies-shared"
+}
 ```
 
 
 ```
 curl -H "baggage: okteto-divert=cindy" https://movies-movies-shared.demo.okteto.dev/api/catalog/healthz
-Hi from cindy!
+{
+"status": "ok",
+"namespace": "cindy"
+}
 ```
 
 After setting the host header, hit the application again. Notice how now the request is being automatically routed to your copy of the catalog service. This is the power of Okteto Divert! Get a full end to end experience, while deploying only the services you are actively working on. 
