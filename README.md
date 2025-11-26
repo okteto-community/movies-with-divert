@@ -70,10 +70,24 @@ export OKTETO_SHARED_NAMESPACE="movies-shared"
 okteto up -f okteto.catalog.yaml
 ```
 
-After this, access the application via the endpoint. You'll notice that it still access the shared service. In order for the request to access your personal copy of the catalog service, set the baggage header as shown below, where `cindy` is the name of your personal namespace.
+After this, access the application via the endpoint. You'll notice that it still access the shared service. In order for the request to access your personal copy of the catalog service, set the baggage header as shown below, where `cindy` is the name of your personal namespace. We recommend ModHeader for browser-based requests. 
 
 ```
 baggage: okteto-divert=cindy
+```
+
+You can also easily test it from the terminal:
+
+```
+# without the header 
+> curl -H https://movies-movies-shared.demo.okteto.dev/api/catalog/healthz
+Hi from movies-shared!
+```
+
+
+```
+curl -H "baggage: okteto-divert=cindy" https://movies-movies-shared.demo.okteto.dev/api/catalog/healthz
+Hi from cindy!
 ```
 
 After setting the host header, hit the application again. Notice how now the request is being automatically routed to your copy of the catalog service. This is the power of Okteto Divert! Get a full end to end experience, while deploying only the services you are actively working on. 

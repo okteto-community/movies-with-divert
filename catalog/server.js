@@ -15,8 +15,7 @@ async function startWithRetry() {
     const db = client.db(process.env.MONGODB_DATABASE);
 
     app.get("/catalog/healthz", (req, res, next) => {
-      res.sendStatus(200)
-      return;
+      res.json(`hi from ${process.env.OKTETO_NAMESPACE}`)
     });
 
     app.get("/catalog", async (req, res, next) => {
