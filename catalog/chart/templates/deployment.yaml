@@ -47,6 +47,10 @@ spec:
               value: {{ .Values.mongodb.auth.database }}
             - name: MONGODB_HOST
               value: mongodb
+            - name: KUBERNETES_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
           ports:
             - name: http
               containerPort: 8080
