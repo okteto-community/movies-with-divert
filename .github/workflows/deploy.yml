@@ -11,8 +11,9 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Deploy Preview
-        uses: okteto/deploy-preview@1f2ede5305d25bd6eaa16b971c0e73e04cdf11ee
+        uses: okteto/deploy-preview@b6482b987f403ddb2a234dc96615cedb91f06334
         with:
           token: ${{ secrets.OKTETO_TOKEN }}
           url: ${{ secrets.OKTETO_URL }}
           name: movies-shared
+          labels: "okteto-shared"
