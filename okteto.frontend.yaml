@@ -5,7 +5,6 @@ build:
     context: frontend
 
 deploy:
-  remote: true
   divert:
     namespace: ${OKTETO_SHARED_NAMESPACE}
   commands:
