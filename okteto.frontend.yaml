@@ -5,11 +5,12 @@ build:
     context: frontend
 
 deploy:
+  remote: true
   divert:
     namespace: ${OKTETO_SHARED_NAMESPACE}
   commands:
   - name: Deploy Frontend
-    command: helm upgrade --install frontend frontend/chart --set image=${OKTETO_BUILD_FRONTEND_IMAGE}
+    command: helm upgrade --install frontend frontend/chart --set image=${OKTETO_BUILD_FRONTEND_IMAGE} --take-ownership
 
 dev:
   frontend:

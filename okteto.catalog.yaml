@@ -14,6 +14,7 @@ deploy:
 dev:
   catalog:
     command: bash
+    workdir: /src
     sync:
       - catalog:/src
     forward:
