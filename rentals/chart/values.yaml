@@ -1,11 +1,12 @@
 api:
+  enabled: true
   image: ""
   replicaCount: 1
 
 worker:
+  enabled: true
   image: ""
   replicaCount: 1
-
 
 kafka:
   enabled: true
@@ -19,7 +20,6 @@ kafka:
     storageClass: ""
   service:
     port: 9092
-
 
 postgresql:
   enabled: true
