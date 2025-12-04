@@ -10,10 +10,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Deploy Preview
-        uses: okteto/deploy-preview@b6482b987f403ddb2a234dc96615cedb91f06334
+      - name: Context
+        uses: okteto/context@latest
         with:
           token: ${{ secrets.OKTETO_TOKEN }}
           url: ${{ secrets.OKTETO_URL }}
+
+      - name: Deploy Preview
+        uses: okteto/deploy-preview@b6482b987f403ddb2a234dc96615cedb91f06334
+        with:
           name: movies-shared
           labels: "okteto-shared"
