@@ -1,3 +1,4 @@
+{{- if .Values.worker.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -24,4 +25,4 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
-
+{{- end}}
