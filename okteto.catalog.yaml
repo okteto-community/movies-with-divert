@@ -13,7 +13,7 @@ deploy:
 
 dev:
   catalog:
-    command: bash
+    command: yarn start
     workdir: /src
     sync:
       - catalog:/src
