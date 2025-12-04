@@ -9,7 +9,7 @@ deploy:
     namespace: ${OKTETO_SHARED_NAMESPACE}
   commands:
   - name: Deploy API
-    command: helm upgrade --install api api/chart --set image=${OKTETO_BUILD_API_IMAGE}
+    command: helm upgrade --install api api/chart --set image=${OKTETO_BUILD_API_IMAGE} --take-ownership
 
 dev:
   api:
