@@ -45,8 +45,8 @@ To use Istio instead, add `driver: istio` in the divert configurations in the ok
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/okteto/movies
-   cd movies
+   git clone https://github.com/okteto-community/movies-with-divert
+   cd movies-with-divert
    ```
 
 2. **Deploy the shared environment**
