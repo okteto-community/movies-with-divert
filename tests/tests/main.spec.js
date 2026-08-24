@@ -16,7 +16,7 @@ test('movies has title', async ({ page }) => {
 });
 
 test('catalog has entries', async ({ request }) => {
-    const response = await request.get('/catalog');
+    const response = await request.get('/api/catalog');
     expect(response.status()).toBe(200);
     const data = await response.json();
     expect(data.length).toBe(6);
