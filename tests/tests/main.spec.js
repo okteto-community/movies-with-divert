@@ -31,5 +31,12 @@ test('catalog has entries', async ({ request }) => {
   ];
 
   const actualTitles = data.map(item => item.original_title);
-  expect(actualTitles).toEqual(expectedTitles);  
+  expect(actualTitles).toEqual(expectedTitles);
 });
+
+// New feature in progress — uncomment together with the banner in App.jsx
+// to demo it end-to-end from a personal, diverted frontend.
+// test('Kubecon promo banner is visible', async ({ page }) => {
+//   await page.goto('/');
+//   await expect(page.locator('.App__promo')).toBeVisible();
+// });
