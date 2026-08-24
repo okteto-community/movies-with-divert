@@ -1,6 +1,13 @@
 import { defineConfig, devices } from '@playwright/test';
 
-const BASE_URL = `https://movies-${process.env.OKTETO_NAMESPACE}.${process.env.OKTETO_DOMAIN}`;
+// Tests always target the shared environment's endpoint. When a dev has deployed
+// a service into their own namespace with Divert, OKTETO_SHARED_NAMESPACE points
+// at the shared namespace while OKTETO_NAMESPACE is their personal one; the
+// baggage header below tells the shared ingress which requests to divert back
+// to that personal namespace. When running fully in the shared namespace (no
+// divert), OKTETO_SHARED_NAMESPACE is unset and both values are the same.
+const SHARED_NAMESPACE = process.env.OKTETO_SHARED_NAMESPACE || process.env.OKTETO_NAMESPACE;
+const BASE_URL = `https://movies-${SHARED_NAMESPACE}.${process.env.OKTETO_DOMAIN}`;
 
 /**
  * @see https://playwright.dev/docs/test-configuration
@@ -21,6 +28,11 @@ const config = defineConfig({
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
     baseURL: BASE_URL,
+
+    /* Route requests to this namespace's diverted services on the shared environment. */
+    extraHTTPHeaders: {
+      baggage: `okteto-divert=${process.env.OKTETO_NAMESPACE}`,
+    },
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',

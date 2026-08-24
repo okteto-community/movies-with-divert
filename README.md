@@ -98,6 +98,20 @@ curl -H "baggage: okteto-divert=cindy" https://movies-movies-shared.demo.okteto.
 
 After setting the host header, hit the application again. Notice how now the request is being automatically routed to your copy of the catalog service. This is the power of Okteto Divert! Get a full end to end experience, while deploying only the services you are actively working on. 
 
+#### Running End-to-End Tests
+
+All manifests (the shared `okteto.yaml` and each per-service `okteto.<service>.yaml`) define an `e2e` test job powered by Playwright (see [tests/](tests)). Run it with:
+
+```
+okteto test e2e -f okteto.catalog.yaml
+```
+
+The test suite always targets the **shared** environment's endpoint (`OKTETO_SHARED_NAMESPACE`, falling back to `OKTETO_NAMESPACE` when not diverting) and automatically sends `baggage: okteto-divert=${OKTETO_NAMESPACE}` on every request. This means:
+
+- **Running against the full shared environment** (`OKTETO_SHARED_NAMESPACE` unset, e.g. `okteto test e2e -f okteto.yaml` in `movies-shared`): the baggage header points back at the same namespace, so tests simply exercise the full stack.
+- **Running as the developer who deployed a service personally** (e.g. Dev A ran `okteto up -f okteto.catalog.yaml` in namespace `cindy`): tests hit `movies-movies-shared.<domain>` with `baggage: okteto-divert=cindy`, so requests for the catalog service are routed to Dev A's personal deployment while everything else is served by the shared environment.
+- **Running as any other developer** who hasn't deployed anything personally: the baggage header names a namespace with no diverted services, so every request falls back to the shared environment, giving a full end-to-end run against the shared stack.
+
 #### Available Divert Configurations:
 
 This repository contains samples for different configurations.

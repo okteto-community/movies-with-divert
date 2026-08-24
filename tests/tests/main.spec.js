@@ -9,15 +9,14 @@ test('environment variables are set', async () => {
 
 
 test('movies has title', async ({ page }) => {
-  await page.goto(`https://movies-${process.env.OKTETO_NAMESPACE}.${process.env.OKTETO_DOMAIN}`);
+  await page.goto('/');
 
   // The page title
   await expect(page).toHaveTitle('Movies');
 });
 
 test('catalog has entries', async ({ request }) => {
-    const apiUrl = `https://movies-${process.env.OKTETO_NAMESPACE}.${process.env.OKTETO_DOMAIN}/catalog`;
-    const response = await request.get(apiUrl);
+    const response = await request.get('/catalog');
     expect(response.status()).toBe(200);
     const data = await response.json();
     expect(data.length).toBe(6);
